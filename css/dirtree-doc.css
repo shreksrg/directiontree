@@ -1,0 +1,43 @@
+.agilesc-gradient-grey1 {
+
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 51%, #ffffff 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(50%, #f3f3f3), color-stop(51%, #ededed), color-stop(100%, #ffffff)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 51%, #ffffff 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 51%, #ffffff 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 51%, #ffffff 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ededed 51%, #ffffff 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#ffffff', GradientType = 0); /* IE6-9 */
+
+}
+
+.agilesc-gradient-blue1 {
+    background: #c3d9ff; /* Old browsers */
+    background: -moz-linear-gradient(top, #c3d9ff 0%, #b1c8ef 41%, #98b0d9 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #c3d9ff), color-stop(41%, #b1c8ef), color-stop(100%, #98b0d9)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #c3d9ff 0%, #b1c8ef 41%, #98b0d9 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #c3d9ff 0%, #b1c8ef 41%, #98b0d9 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #c3d9ff 0%, #b1c8ef 41%, #98b0d9 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #c3d9ff 0%, #b1c8ef 41%, #98b0d9 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#c3d9ff', endColorstr = '#98b0d9', GradientType = 0); /* IE6-9 */
+
+}
+
+.agilesc-outshadow-1 {
+    -moz-box-shadow: 0.2em 0.2em 6px #999;
+    box-shadow: 0.2em 0.2em 6px #999;
+}
+
+.agilesc-node-corner {
+    -webkit-border-radius: 0.8em;
+    -moz-border-radius: 0.8em;
+    border-radius: 0.8em;
+}
+
+.agilesc-nodes {
+    width: 132px;
+    height: 64px;
+   /* line-height: 64px;*/
+    text-align: center;
+}
+
