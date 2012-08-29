@@ -1,0 +1,16 @@
+define(function (require, exports) {
+    require('jmboile');
+    require.async('fancybox');
+    require.async('datatable');
+    require.async('dynamic');
+  //  require.async('draw2d');
+    $(function () {
+        console.log("hello,shrek");
+        $("#exam").fancybox();
+        /*$('#example').dataTable({
+            "sPaginationType":"full_numbers"
+        });*/
+
+
+    })
+})

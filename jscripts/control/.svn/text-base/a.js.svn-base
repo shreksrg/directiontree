@@ -1,0 +1,12 @@
+/**
+ * Created with JetBrains PhpStorm.
+ * User: shiruigang
+ * Date: 12-8-24
+ * Time: 下午4:15
+ * To change this template use File | Settings | File Templates.
+ */
+
+
+    var aaa = "im shrek";
+   // return aaa;
+

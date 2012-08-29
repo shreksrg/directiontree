@@ -1,0 +1,43 @@
+9
+
+dir
+793
+svn://demox.paliie.com/paliie/trunk/www/directiontree/jscripts/plugins
+svn://demox.paliie.com
+
+
+
+2012-08-27T03:18:13.855248Z
+793
+shreksrg
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+8c0e639e-5ac1-416b-8daa-d54411594edd
+
+datatable
+dir
+
+jmobile
+dir
+
+jscharts
+dir
+
+draw2d
+dir
+
+fancybox
+dir
+

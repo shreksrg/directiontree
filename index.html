@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/dirtree-doc.css">
+    <script type="text/javascript" src="jscripts/libs/agilescJS.js"></script>
+    <script type="text/javascript" src="jscripts/configure/config.commlibs.js"></script>
+    <script type="text/javascript">
+
+        seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscripts/control/piecharts.js', 'dynamic'], function (a, b, c, d) {
+
+            /*$('div[orgid=firm]').click(function () {
+                *//*-- 显示饼状图*//*
+                $.fancybox('<div id="graph" style="width:560px;height: 320px; overflow:hidden;"></div>');
+                c.drawPie("json");
+            })
+
+            $('div[orgid=primary]').click(function () {
+                *//*-- 显示柱状与饼状图*//*
+                $.fancybox('<div id="graphbar" style="width:618px;height: 380px; overflow:hidden;"></div><div id="graph" style="width:560px;height: 320px; overflow:hidden;"></div>');
+                c.drawBar("json");
+                c.drawPie("json");
+
+            })
+
+
+            $('#detail').click(function () {
+                *//*-- 显示表格数据*//*
+                $.fancybox('<div id="dynamic" style="width:618px;height: 380px; overflow:hidden;"></div>');
+                d.dataTable("json");
+            })*/
+
+            /*
+             * 初始化数据：7月份
+             * */
+            var response = {month:7, data:[
+                {id:1, orgType:0, orgName:"厂商", saleAccount:60, salePer:"89%"},
+                {id:2, orgType:1, orgName:"一级商", saleAccount:60, salePer:"89%"},
+                {id:3, orgType:2, orgName:"二级商", saleAccount:60, salePer:"89%"}
+            ]}
+
+            /*
+             * 药厂产品销售比(饼状图)
+             * */
+            var response = [
+                {id:1, productName:"药品名1", salePer:"35%"},
+                {id:2, productName:"药品名2", salePer:"36%"},
+                {id:3, productName:"药品名3", salePer:"37%"}
+            ]
+
+            /*
+             * 药厂产品销售排名(表格)
+             * */
+            var post = {month:7, productCode:2, start:2, limit:20};
+            var response = [
+                {level:1, productName:"药品名1", overPer:"15%", chainPer:"30%"},
+                {level:2, productName:"药品名2", overPer:"16%", chainPer:"31%"},
+                {level:3, productName:"药品名3", overPer:"17%", chainPer:"32%"},
+            ];
+
+            /*
+             * 销售商销售排行(柱状及饼状图)
+             * */
+
+            var post = {month:7, orgType:"4"};
+            var response = [
+                {level:1, orgName:"商家名", saleAccount:55, overAccount:38, data:[
+                    {productName:"药品名1", salePer:"38%"},
+                    {productName:"药品名2", salePer:"39%"},
+                    {productName:"药品名3", salePer:"40%"},
+
+                ]},
+                {level:2, orgName:"商家名", saleAccount:55, overAccount:38, data:[
+                    {productName:"药品名1", salePer:"38%"},
+                    {productName:"药品名2", salePer:"39%"},
+                    {productName:"药品名3", salePer:"40%"},
+
+                ]},
+                {level:3, orgName:"商家名", saleAccount:55, overAccount:38, data:[
+                    {productName:"药品名1", salePer:"38%"},
+                    {productName:"药品名2", salePer:"39%"},
+                    {productName:"药品名3", salePer:"40%"},
+
+                ]},
+            ]
+        });
+
+
+    </script>
+    <title></title>
+</head>
+<body>
+<div data-role="page">
+
+    <div data-role="header">
+        <h1>安捷力流向树报表分析DEMO1.0.1</h1>
+    </div>
+    <!-- /header -->
+
+    <div data-role="content">
+
+        <div id="paintarea"></div>
+
+        <!--<button data-inline="true" id="detail">查看全部产品</button>-->
+
+
+    </div>
+    <!-- /content -->
+
+</div>
+<!-- /page -->
+</body>
+</html>
