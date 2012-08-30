@@ -44,7 +44,6 @@ define(function (require, exports) {
     var connLine = nodeEntity.drawLine([nodeObj2_1, nodeObj3_1], ['rc', 'tc']);
     canvasFlow.addFigure(connLine);
 
-
     /*
      * 绘制百分比标签
      * */

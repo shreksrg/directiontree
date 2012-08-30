@@ -28,7 +28,7 @@ define(function (require, exports) {
             this.d.setAttribute("node-role", "organize");
             this.d.setAttribute("orgid", entity.orgid);
             this.d.setAttribute("class", this.nodeClass);
-            this.d.innerHTML = '<b>' + entity.content + '</b><p><label>销售额:</label>1888</p>';
+            this.d.innerHTML = '<b>' + entity.content + '</b><p><label>销售额:</label><ac>1888</ac></p>';
         }
     };
 
