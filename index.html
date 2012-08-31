@@ -68,7 +68,7 @@
             $('div[orgid=firm]').click(function () {
                 var orgType = $(this).data("orgNode").orgType;
                 $.post(urlFirm, {month:7, orgType:orgType}, function (d) {
-                            arrConvert_RemoveJEl(d, "id");
+                            var d = arrConvert_RemoveJEl(d, "id");
                             $.fancybox(argsPie.domStr);
                             c.drawPie(d, argsPie.config);
                         }, "json"
@@ -98,7 +98,31 @@
              * 去除json元素
              * */
 
-            function arrConvert_RemoveJEl(d, n) {
+
+            function Batch_RemoveJEl(d, a) {
+                /*-- 数据样例
+                 var d = [
+                 {id:1, productName:"药品名1", salePer:"35%"},
+                 {id:2, productName:"药品名2", salePer:"36%"},
+                 {id:3, productName:"药品名3", salePer:"37%"},
+                 {id:4, productName:"药品名3", salePer:"37%"}
+                 ]
+                 var a = ["id", "salePer"];*/
+                for (var i = 0; i <= d.length; i++) {
+                    for (var item in d[i]) {
+                        /*-- d[i]={id:1, productName:"药品名1", salePer:"35%"}*/
+                        for (var j = 0 in a) {
+                            if (item == a[j]) {
+                                delete d[i][item];
+                            }
+                        }
+                    }
+                }
+                return d;
+            }
+
+
+            function arrConvert_RemoveJEl(d, a) {
                 /*-- 数据样例*/
                 /*var response = [
                  {id:1, productName:"药品名1", salePer:"35%"},
