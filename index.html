@@ -92,6 +92,31 @@
                 d.dataTable("json");
             })
 
+
+            /*
+             * 去除json元素
+             * */
+
+            function arrConvert_RemoveJEl(d, n) {
+                /*-- 数据样例*/
+                /*var response = [
+                 {id:1, productName:"药品名1", salePer:"35%"},
+                 {id:2, productName:"药品名2", salePer:"36%"},
+                 {id:3, productName:"药品名3", salePer:"37%"}
+                 ]*/
+
+                for (var i = 0; i <= d.length; i++) {
+                    for (var item in d[i]) {
+                        if (item == n) {
+                            delete d[i][n];
+                        }
+                        break;
+                    }
+                }
+                return d;
+            }
+
+
             /*
              * 初始化数据：7月份
              * */
@@ -153,7 +178,7 @@
 
         <div id="paintarea"></div>
 
-        <!--<button data-inline="true" id="detail">查看全部产品</button>-->
+        <button data-inline="true" id="detail">查看全部产品</button>
 
 
     </div>
