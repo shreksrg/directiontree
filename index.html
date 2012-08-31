@@ -68,6 +68,7 @@
             $('div[orgid=firm]').click(function () {
                 var orgType = $(this).data("orgNode").orgType;
                 $.post(urlFirm, {month:7, orgType:orgType}, function (d) {
+                            arrConvert_RemoveJEl(d, "id");
                             $.fancybox(argsPie.domStr);
                             c.drawPie(d, argsPie.config);
                         }, "json"
