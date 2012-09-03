@@ -89,6 +89,7 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
         var args = {};
         args.month = $('select[name=month]').val();
         args.productCode = $('select[name=product]').val();
+        args.pagescount = 0;
         args.start = 1;
         args.limit = 20;
         //--> 弹出层初始加载表格数据
@@ -97,9 +98,24 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
             success:function (data) {
                 $.fancybox(data, {onComplete:function () {
                     $('#frmProductss').jqTransform();  //-- 表单美化
-                    //--> 更新表格数据
+                    //--> 加载表格数据
                     $.post(url, args, function (r) {
-                        d.dataTable(libFna.respDataFormat(r), {tID:"dt-example", aoColumns:aoColumns});
+                        var r = {totalProperty:6, root:[
+                         {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+                         {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+                         ]}
+                        initDataTableD(r, args);
                     });
                 }});
             }
@@ -115,9 +131,28 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
         args.start = 1;
         args.limit = 20;
         args.start = $(this).text();
+        $('#dt-pageNum li').removeClass();
+        $(this).addClass("page-selected");
         //--> 更新表格数据
         $.post(url, args, function (data) {
-            d.dataTable(libFna.respDataFormat(data), {tID:"dt-example", aoColumns:aoColumns});
+            var data = {totalProperty:6, root:[
+             {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+             {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+             ]}
+            if (typeof(data) === "string") {
+                var data = libFna.strToJson(data);
+            }
+            d.dataTable(libFna.respDataFormat(data["root"]), {tID:"dt-example", aoColumns:aoColumns});
+
         });
     })
 
@@ -127,15 +162,37 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
         var args = {};
         args.month = $('select[name=month]').val();
         args.productCode = $('select[name=product]').val();
+        args.pagescount = 0;
         args.start = 1;
         args.limit = 20;
         //--> 更新表格数据
         $.post(url, args, function (data) {
-            console.log(data);
-            d.dataTable(libFna.respDataFormat(data), {tID:"dt-example", aoColumns:aoColumns});
+            var data = {totalProperty:6, root:[
+             {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+             {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+             ]}
+            initDataTableD(data, args);
         });
     })
 
+
+    function initDataTableD(data, args) {
+        if (typeof(data) === "string") {
+            var data = libFna.strToJson(data);
+        }
+        var recordCount = data["totalProperty"];
+        $('#dt-recordinfo').find("reccount").html(recordCount);
+        args.pagescount = Math.ceil(recordCount / args.limit);
+        $('#dt-pageNum').empty(); //-- 清除页码
+        for (var i = 1; i <= args.pagescount; i++) {
+            $('#dt-pageNum').append('<li>' + i + '</li>');
+        }
+        d.dataTable(libFna.respDataFormat(data["root"]), {tID:"dt-example", aoColumns:aoColumns});
+    }
 
     /*
      * 月份选择器
