@@ -1,0 +1,28 @@
+<html>
+<head>
+
+    <title>JSChart</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <script type="text/javascript" src="../../../sources/jscharts.js"></script>
+
+</head>
+<body>
+
+<div id="graph">Loading...</div>
+
+
+<script type="text/javascript">
+
+    var myChart = new JSChart('graph', 'bar');
+    myChart.setDataJSON("data.json");
+    myChart.set3D(true);
+    myChart.draw();
+
+    function callback() {
+        alert('User click');
+    }
+
+</script>
+
+</body>
+</html>

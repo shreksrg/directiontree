@@ -1,5 +1,6 @@
 define(function (require, exports) {
     require('jmboile');
     require.async('fancybox');
-    require.async('datatable');
+    require.async('jtransform');
+
 })

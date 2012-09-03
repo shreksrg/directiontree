@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="css/dirtree-doc.css">
+<link rel="stylesheet" href="css/dt_page.css">
+<link rel="stylesheet" href="css/dt_table.css">
 <script type="text/javascript" src="jscripts/libs/agilescJS.js"></script>
 <script type="text/javascript" src="jscripts/configure/config.commlibs.js"></script>
 <script type="text/javascript">
-seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscripts/control/bpcharts.js', './jscripts/control/dynamic'], function (a, b, c, d) {
+
+seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscripts/control/bpcharts.js', './jscripts/control/dynamic', './jscripts/control/libFna', 'test'], function (a, b, c, d, libFna, t) {
 
     /*
      * URL请求配置
@@ -17,29 +20,10 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     var urlAgency = "http://localhost/directiontree/respAgency.php";//-- 点击经销商请求URL
 
     /*
-     * 初始化流向数数据
+     * 初始化流向树数据
      * */
-    $.post(urlIniteral, {month:7}, function (d) {
-        /* var data = {month:7, data:[
-         {id:0, orgType:0, orgName:"厂商", saleAccount:60, salePer:"89%",spid:},
-         {id:1, orgType:1, orgName:"一级商", saleAccount:70, salePer:"89%"},
-         {id:2, orgType:2, orgName:"二级商", saleAccount:80, salePer:"89%"}
-         ]}*/
 
-        var data = d["data"];
-        $('div[node-role=organize]').each(function (index) {
-            for (var i in data) {
-                if (data[i]["id"] == index) {
-                    $(this).data("orgNode", {orgType:data[i]["orgType"], orgName:data[i]["orgName"], saleAccount:data[i]["saleAccount"], salePer:data[i]["salePer"]});
-                    $(this).find('b').html(data[i]["orgName"]);
-                    $(this).find('ac').html(data[i]["saleAccount"]);
-                    $('#' + data[i]["spid"]).find('b').html(data[i]["salePer"]);
-                    break;
-                }
-            }
-        })
-    }, "json");
-
+    initDirectionTreeD(urlIniteral, {month:7});
 
     function loadChartsBP(args) {
         $.fancybox(args.domStr);
@@ -60,7 +44,7 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     argsBP.configPie = {divID:"grapPie", sizeWidth:618, sizeHeight:198, radius:102, posX:156, posY:98, labposX:312, labposY:56, angle:45, ccitemName:"productName"};
 
     /*-- 厂家图表配置参数*/
-    argsPie.domStr = '<div id="grapPie" style="width:602px;height: 320px; overflow:hidden;"></div>';
+    argsPie.domStr = '<div id="grapPie" class="chart-firmPie"></div><button id="btnShowDt" class="link-showDt agilesc-gradient-grey2">查看所有产品</button>';
     argsPie.config = {divID:"grapPie", sizeWidth:602, sizeHeight:320, radius:168, posX:202, posY:0, labposX:418, labposY:56, angle:45, ccitemName:"productName"};
 
 
@@ -68,7 +52,7 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     $('div[orgid=firm]').click(function () {
         var orgType = $(this).data("orgNode").orgType;
         $.post(urlFirm, {month:7, orgType:orgType}, function (d) {
-                    var d = arrConvert_RemoveJEl(d, "id");
+                    var d = libFna.single_RemoveJEl(d, "id");
                     $.fancybox(argsPie.domStr);
                     c.drawPie(d, argsPie.config);
                 }, "json"
@@ -87,35 +71,42 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     })
 
     /*
-     * 表格操作
+     * 厂家产品表格数据操作
      * */
 
-    /*-- 初始化打印厂商产品列表表格*/
-    $('#detail').click(function () {
+    /*-- 表格配置参数*/
+    var aoColumns = [
+        { "sTitle":"药品名" },
+        { "sTitle":"销售额" },
+        { "sTitle":"环比增长" },
+        { "sTitle":"同比增长" }
+    ];
+    var uriLayout = "layoutDataTable.html"; //--> 表格布局URL
+
+    /*-- 切换加载表格数据*/
+    $('#btnShowDt').live('click', function () {
         var url = "do.html"
         var args = {};
         args.month = $('select[name=month]').val();
         args.productCode = $('select[name=product]').val();
         args.start = 1;
         args.limit = 20;
-
-        /*-- 加载表格布局(同步)*/
+        //--> 弹出层初始加载表格数据
         $.ajax({
-            url:"layoutDataTable.html",
-            async:false,
-            success:function (d) {
-                $.fancybox(d);
+            url:uriLayout,
+            success:function (data) {
+                $.fancybox(data, {onComplete:function () {
+                    $('#frmProductss').jqTransform();  //-- 表单美化
+                    //--> 更新表格数据
+                    $.post(url, args, function (r) {
+                        d.dataTable(libFna.respDataFormat(r), {tID:"dt-example", aoColumns:aoColumns});
+                    });
+                }});
             }
         })
-
-        /*-- 初始化表格数据*/
-        $.post(url, args, function (data) {
-            var data = strToJson(data);
-            d.dataTable("json");
-        });
     })
 
-    /*-- 点击页码事件*/
+    /*-- 表格翻页*/
     $('#dt-pageNum li').live('click', function () {
         var url = "do.html";
         var args = {};
@@ -123,109 +114,81 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
         args.productCode = $('select[name=product]').val();
         args.start = 1;
         args.limit = 20;
-        args.start = $(this).data("pageNum");
-
-        /*-- 初始化表格数据*/
+        args.start = $(this).text();
+        //--> 更新表格数据
         $.post(url, args, function (data) {
-            var data = strToJson(data);//-- 转换字符类型为Json
-            // console.log(data);
-            // $.fancybox('<div id="dynamic" style="width:618px;height: 380px; overflow:hidden;"></div>');
-            // d.dataTable("json");
-            var aDataSet = [
-                ['Trident', 'Internet Explorer 4.0', 'Win 95+', '4', 'X'],
-                ['Trident', 'Internet Explorer 5.0', 'Win 95+', '5', 'C'],
-                ['Trident', 'Internet Explorer 5.5', 'Win 95+', '5.5', 'A'],
-                ['Trident', 'Internet Explorer 6', 'Win 98+', '6', 'A'],
-                ['Trident', 'Internet Explorer 7', 'Win XP SP2+', '7', 'A']
-            ]
-            $('#dt-example').dataTable({
-
-                "sPaginationType":"full_numbers",
-                "aaData":aDataSet,
-                "aoColumns":[
-                    { "sTitle":"Engines" },
-                    { "sTitle":"Engine" },
-                    { "sTitle":"Browser" },
-                    { "sTitle":"Browser" },
-
-
-                ],
-                "bDestroy":true
-                //"bRetrieve":true
-            });
+            d.dataTable(libFna.respDataFormat(data), {tID:"dt-example", aoColumns:aoColumns});
         });
     })
 
-    /*--DataTable:点击查询事件 */
-    $('#dt-btnSeeker').live('click', function () {
+    /*-- 表格查询 */
+    $('#dtBtnSeeker').live('click', function () {
         var url = "do.html"
         var args = {};
         args.month = $('select[name=month]').val();
         args.productCode = $('select[name=product]').val();
         args.start = 1;
         args.limit = 20;
-
+        //--> 更新表格数据
         $.post(url, args, function (data) {
-            var data = strToJson(data);//-- 转换字符类型为Json
-            d.dataTable(data); //-- 加载数据到表格
+            console.log(data);
+            d.dataTable(libFna.respDataFormat(data), {tID:"dt-example", aoColumns:aoColumns});
+        });
+    })
+
+
+    /*
+     * 月份选择器
+     * */
+
+    $('#frmMonth').append('<select id="monthSelecter" data-role="none"></select>');
+    $('#frmMonth').css({'right':'5em', 'top':'6em'})
+    for (var i = 1; i <= 12; i++) {
+        var m = i + '月';
+        $('#monthSelecter').append('<option value="' + i + '">' + m + '</option>')
+    }
+    $(function () {
+        var selMonth = 7;
+        $('#frmMonth').jqTransform();  //--> 表单美化
+        $('#frmMonth').find('.jqTransformSelectWrapper ul li a').click(function () {
+            var txtSelect = $(this).text();
+            $('#monthSelecter option').each(function (i) {
+                if ($(this).text() == txtSelect) {
+                    selMonth = $(this).val();
+                }
+            });
+            initDirectionTreeD(urlIniteral, {month:selMonth})
         })
     })
 
 
     /*
-     * 字符串装换为json对象
+     * 初始化流向树节点数据
      * */
 
-    function strToJson(str) {
-        return  (new Function("return " + str))();
-    }
-
-
-    /*
-     * 去除json元素
-     * */
-
-    function Batch_RemoveJEl(d, a) {
-        /*-- 数据样例
-         var d = [
-         {id:1, productName:"药品名1", salePer:"35%"},
-         {id:2, productName:"药品名2", salePer:"36%"},
-         {id:3, productName:"药品名3", salePer:"37%"},
-         {id:4, productName:"药品名3", salePer:"37%"}
-         ]
-         var a = ["id", "salePer"];*/
-        for (var i = 0; i <= d.length; i++) {
-            for (var item in d[i]) {
-                /*-- d[i]={id:1, productName:"药品名1", salePer:"35%"}*/
-                for (var j = 0 in a) {
-                    if (item == a[j]) {
-                        delete d[i][item];
+    function initDirectionTreeD(url, args) {
+        console.log(url);
+        $.post(url, args.month, function (d) {
+            var data;
+            typeof(d) === "string" ? data = libFna.strToJson(d)["data"] : data = d["data"];
+            console.log(data);
+            $('div[node-role=organize]').each(function (index) {
+                for (var i in data) {
+                    if (data[i]["id"] == index) {
+                        $(this).data("orgNode", {orgType:data[i]["orgType"], orgName:data[i]["orgName"], saleAccount:data[i]["saleAccount"], salePer:data[i]["salePer"]});
+                        $(this).find('b').html(data[i]["orgName"]);
+                        $(this).find('ac').html(data[i]["saleAccount"]);
+                        $('#' + data[i]["spid"]).find('b').html(data[i]["salePer"]);
+                        break;
                     }
                 }
-            }
-        }
-        return d;
+            })
+        });
     }
 
-
-    function arrConvert_RemoveJEl(d, a) {
-        /*-- 数据样例*/
-        /*var response = [
-         {id:1, productName:"药品名1", salePer:"35%"},
-         {id:2, productName:"药品名2", salePer:"36%"},
-         {id:3, productName:"药品名3", salePer:"37%"}
-         ]*/
-
-        for (var i = 0; i <= d.length; i++) {
-            for (var item in d[i]) {
-                if (item == n) {
-                    delete d[i][n];
-                }
-                break;
-            }
-        }
-        return d;
-    }
+    /*$('#frmMonth').find('.jqTransformSelectWrapper ul li a').click(function () {
+     console.log($(this).text());
+     })*/
 
 
     /*
@@ -289,6 +252,7 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     <div data-role="content">
 
         <div id="paintarea"></div>
+        <form id="frmMonth"></form>
 
         <button data-inline="true" id="detail">查看全部产品</button>
 

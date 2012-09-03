@@ -84,7 +84,7 @@ define(function (require, exports) {
         this.d = document.createElement("div");
         this.d.setAttribute("node-role", "spLabel");
         this.d.setAttribute("id", entity.label.spid);
-        this.d.innerHTML = '<label>销售占比:</label><b>0.00%</b>';
+        this.d.innerHTML = '<label>销售占比:</label><b>0.00</b>%';
         item.appendChild(this.d);
         item.style.width = "auto";
         item.style.height = "auto";

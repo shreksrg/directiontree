@@ -1,28 +1,26 @@
-<!DOCTYPE HTML>
-<html lang="en-US">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-<section>
+<section class="dt-section">
     <div class="section-bar">
         <form action="" id="frmProductss" onsubmit="javascript:return false;">
-            <select data-role="none" name="month" id="">
+            <div class="dt-frmSelect"><select data-role="none" name="month" id="">
                 <option value="7">7月</option>
                 <option value="8">8月</option>
                 <option value="9">9月</option>
-            </select>
-            <select data-role="none" name="product" id="">
+                <option value="9">10月</option>
+                <option value="9">11月</option>
+                <option value="9">12月</option>
+            </select></div>
+            <div class="dt-frmSelect"><select data-role="none" name="product" id="">
                 <option value="0">所有产品</option>
                 <option value="1">康泰克</option>
                 <option value="2">荷香正气水</option>
-            </select>
+            </select></div>
+
+
         </form>
-        <button data-role="none" id="dt-btnSeeker">查询</button>
+        <button data-role="none" class="agilesc-gradient-grey2" id="dtBtnSeeker">查询</button>
     </div>
     <div class="section-dataTable" id="dt-Dynamic">
-        <table cellpadding="0" cellspacing="0" border="0" class="display" id="dt-example"></table>
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="display" id="dt-example"></table>
     </div>
     <div class="section-pageination">
         <ul id="dt-pageNum">
@@ -31,8 +29,8 @@
             <li>3</li>
             <li>4</li>
         </ul>
-        <span>共48条记录</span>
+        <span id="dt-recordinfo">共481条记录</span>
     </div>
 </section>
-</body>
-</html>
+
+

@@ -6,6 +6,13 @@ JAlias.datatable = "http://localhost/directiontree/jscripts/plugins/datatable/jq
 JAlias.libDraw2d = "http://localhost/directiontree/jscripts/plugins/draw2d/draw2d.js";
 JAlias.jsgraphics = "http://localhost/directiontree/jscripts/plugins/draw2d/wz_jsgraphics.js";
 JAlias.jscharts = "http://localhost/directiontree/jscripts/plugins/jscharts/jscharts.js";
+JAlias.jtransform = "http://localhost/directiontree/jscripts/plugins/jtransform/jtransform.cmd.js";
+
+
+JAlias.ANGELa68 = "http://localhost/directiontree/jscripts/control/ANGELa68.js";
+JAlias.dtDynamic = "http://localhost/directiontree/jscripts/control/dynamic.js";
+JAlias.test="http://localhost/directiontree/jscripts/control/b.js"
+
 
 seajs.config({
     alias:JAlias,

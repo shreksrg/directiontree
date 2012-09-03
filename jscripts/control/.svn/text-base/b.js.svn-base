@@ -7,6 +7,5 @@
  */
 
 define(function (require) {
-  require("http://localhost/directiontree/jscripts/control/a.js");
-  console.log(aaa);
+
 })

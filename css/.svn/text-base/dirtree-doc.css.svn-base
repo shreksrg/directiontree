@@ -1,3 +1,9 @@
+ul, li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
 .agilesc-gradient-grey1 {
 
     background: #ffffff; /* Old browsers */
@@ -37,7 +43,68 @@
 .agilesc-nodes {
     width: 132px;
     height: 64px;
-   /* line-height: 64px;*/
+    /* line-height: 64px;*/
     text-align: center;
 }
+
+/*dt-table*/
+.dt-section {
+    width: 618px;
+    font-size: 14px;
+}
+
+.dt-section thead {
+    background: #cccccc;
+    height: 32px;
+    -webkit-border-radius: 0.8em;
+    border-radius: 0.8em;
+
+}
+
+.section-pageination ul li {
+    display: inline-block;
+    padding: 2px 6px;
+    text-align: center;
+    cursor: pointer;
+    background: #cccccc;
+    margin: 0 1px;
+    font-size: 14px
+}
+
+.dt-section .section-bar {
+    height: 38px;
+    padding-top: 12px;
+}
+
+#frmProductss {
+    float: left;
+}
+
+#frmProductss .dt-frmSelect {
+    float: left;
+    margin-right: 2em
+}
+
+#dt-btnSeeker {
+    float: right;
+}
+
+#dt-pageNum {
+    float: left;
+}
+
+#dt-recordinfo {
+    line-height: 22px;
+    float: right;
+}
+
+#frmMonth {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 200px;
+}
+
+
+
 

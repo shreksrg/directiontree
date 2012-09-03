@@ -1,6 +1,6 @@
 define(function (require, exports) {
     require('jsgraphics');
-    var nodeEntity = require('http://localhost/directiontree/jscripts/control/ANGELa68.js');
+    var nodeEntity = require('ANGELa68');
     var draw2d = nodeEntity.draw2d;
     var canvasFlow = new draw2d.Workflow("paintarea");
 
