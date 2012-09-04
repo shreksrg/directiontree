@@ -185,6 +185,31 @@ ul, li {
     overflow: hidden;
 }
 
+#labUnit {
+    position: absolute;
+    right: 6em;
+    top: 5em;
+    font-size: 12px;
+    font-weight: bold;
+}
 
+.tip-pop-none {
+    width: 312px;
+    height: 128px;
+}
+
+.tip-pop-none h3 {
+    margin: 0;
+    padding: 0 0 0 1em;
+    height: 48px;
+    line-height: 48px;
+    font-size: 18px;
+    border-bottom: 2px solid #ccc;
+    background: #d5d5d5; /* Old browsers */
+}
+
+.tip-pop-none p {
+    padding-left: 2em;
+}
 
 

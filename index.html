@@ -9,332 +9,375 @@
 <script type="text/javascript" src="jscripts/configure/config.commlibs.js"></script>
 <script type="text/javascript">
 
+
 seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscripts/control/bpcharts.js', './jscripts/control/dynamic', './jscripts/control/libFna', 'test'], function (a, b, c, d, libFna, t) {
 
-    var selMonth = 7;
-    var selProduct = 0;
-    /*
-     * URL请求配置
-     * */
+            var selMonth = 7;
+            var selProduct = 0;
+            /*
+             * URL请求配置
+             * */
 
-    var urlIniteral = "http://localhost/directiontree/do.php";  //-- 初始化请求URL
-    var urlFirm = "http://localhost/directiontree/respFirm.php"; //-- 点击厂商请求URL
-    var urlAgency = "http://localhost/directiontree/respAgency.php";//-- 点击经销商请求URL
-
-
-    /*
-     * 初始化流向树数据
-     * */
-
-    initDirectionTreeD(urlIniteral, {month:7});
-
-    function loadChartsBP(args) {
-        $.fancybox(args.domStr);
-        c.drawBar(args.dataBar, args.configBar); //-- 加载柱状图
-        c.drawPie(args.dataPie, args.configPie);//-- 加载饼状图
-    }
-
-    var argsBar = {}, argsPie = {}, argsBP = {};
-    /*-- 经销商图表配置参数*/
-    argsBP.domStr = '<div id="graphBar" style="width:618px;height: 380px; overflow:hidden;"></div><div id="grapPie" style="width:618px;height: 210px; overflow:hidden;"></div>'
-    argsBP.configBar = {divID:"graphBar", sizeWidth:618, sizeHeight:360, legends:[
-        [1, "去年"],
-        [2, "今年"]
-    ], legendShow:true, barColor:[
-        {color:'#2D6B96', sort:1},
-        {color:'#9CCEF0', sort:2}
-    ]};
-    argsBP.configPie = {divID:"grapPie", sizeWidth:618, sizeHeight:198, radius:102, posX:156, posY:98, labposX:312, labposY:56, angle:45, ccitemName:"productName"};
-
-    /*-- 厂家图表配置参数*/
-    argsPie.domStr = '<div id="grapPie" class="chart-firmPie"></div><button id="btnShowDt" class="link-showDt agilesc-gradient-grey2">查看所有产品</button>';
-    argsPie.config = {divID:"grapPie", sizeWidth:602, sizeHeight:320, radius:168, posX:202, posY:0, labposX:418, labposY:56, angle:45, ccitemName:"productName"};
+            var urlIniteral = "http://localhost/directiontree/do.php";  //-- 初始化请求URL
+            var urlFirm = "http://localhost/directiontree/respFirm.php"; //-- 点击厂商请求URL
+            var urlAgency = "http://localhost/directiontree/respAgency.php";//-- 点击经销商请求URL
 
 
-    /*-- 执行厂家点击事件*/
-    $('div[orgid=firm]').click(function () {
-        var orgType = $(this).data("orgNode").orgType;
-        $.post(urlFirm, {month:7, orgType:orgType}, function (d) {
-                    var d = libFna.single_RemoveJEl(d, "id");
-                    $.fancybox(argsPie.domStr);
-                    c.drawPie(d, argsPie.config);
-                }, "json"
-        )
-    })
+            /*
+             * 初始化流向树数据
+             * */
 
-    /*-- 执行经销商点击事件*/
-    $('div[node-role=organize]:not([orgid=firm])').click(function () {
-        var orgType = $(this).data("orgNode").orgType;
-        $.post(urlAgency, {month:7, orgType:orgType}, function (d) {
-                    argsBP.dataPie = d.product;
-                    argsBP.dataBar = d.org;
-                    loadChartsBP(argsBP);
-                }, "json"
-        )
-    })
+            initDirectionTreeD(urlIniteral, {month:7});
 
-    /*
-     * 厂家产品表格数据操作
-     * */
-
-    /*-- 表格配置参数*/
-    var aoColumns = [
-        { "sTitle":"药品名" },
-        { "sTitle":"销售额" },
-        { "sTitle":"环比增长" },
-        { "sTitle":"同比增长" }
-    ];
-    var uriLayout = "layoutDataTable.html"; //--> 表格布局URL
-
-    /*-- 切换加载表格数据*/
-    var dtSelMonth = 7, dtSelProduct = 0;
-
-    $('#btnShowDt').live('click', function () {
-        var url = "do.html"
-        var args = {};
-        args.month = selMonth;
-        args.productCode = 0;
-        args.pagescount = 0;
-        args.start = 1;
-        args.limit = 20;
-        //--> 弹出层初始加载表格数据
-        $.ajax({
-            url:uriLayout,
-            success:function (data) {
-                $.fancybox(data, {onComplete:function () {
-                    $('#frmProductss').jqTransform();  //-- 表单美化
-                    $('#dtSelMonth').find('.jqTransformSelectWrapper div span').html(selMonth + "月");
-
-                    //--> 绑定月份选择事件
-                    bind_clickSelector($('#dtSelMonth'), function (m) {
-                        dtSelMonth = m;
-                    });
-                    //--> 绑定产品选择事件
-                    bind_clickSelector($('#dtSelProduct'), function (c) {
-                        dtSelProduct = c;
-                    });
-
-                    //--> 加载表格数据
-                    $.post(url, args, function (r) {
-                        var r = {totalProperty:6, root:[
-                            {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
-                            {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
-                        ]}
-                        initDataTableD(r, args);
-                    });
-                }});
+            function loadChartsBP(args) {
+                $.fancybox(args.domStr);
+                c.drawBar(args.dataBar, args.configBar); //-- 加载柱状图
+                c.drawPie(args.dataPie, args.configPie);//-- 加载饼状图
             }
-        })
-    })
 
-    /*-- 表格翻页*/
-    $('#dt-pageNum li').live('click', function () {
-        var url = "do.html";
-        var args = {};
-        args.month = dtSelMonth;
-        args.productCode = dtSelProduct;
-        args.start = 1;
-        args.limit = 20;
-        args.start = $(this).text();
-        $('#dt-pageNum li').removeClass();
-        $(this).addClass("page-selected");
-        //--> 更新表格数据
-        $.post(url, args, function (data) {
-            var data = {totalProperty:6, root:[
-                {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
-                {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
-            ]}
-            if (typeof(data) === "string") {
-                var data = libFna.strToJson(data);
-            }
-            d.dataTable(libFna.respDataFormat(data["root"]), {tID:"dt-example", aoColumns:aoColumns});
+            var argsBar = {}, argsPie = {}, argsBP = {};
+            /*-- 经销商图表配置参数*/
+            argsBP.domStr = '<div id="graphBar" style="width:618px;height: 360px;"></div><div id="grapPie" style="width:618px;height: 210px; overflow:hidden;"></div>'
+            argsBP.configBar = {divID:"graphBar", sizeWidth:618, sizeHeight:360, legends:[
+                [1, "去年"],
+                [2, "今年"]
+            ], legendShow:true, barColor:[
+                {color:'#2D6B96', sort:1},
+                {color:'#9CCEF0', sort:2}
+            ]};
+            argsBP.configPie = {divID:"grapPie", sizeWidth:618, sizeHeight:198, radius:102, posX:156, posY:98, labposX:312, labposY:56, angle:45, ccitemName:"productName"};
 
-        });
-    })
+            /*-- 厂家图表配置参数*/
+            argsPie.domStr = '<div id="grapPie" class="chart-firmPie"></div><button id="btnShowDt" class="link-showDt agilesc-gradient-grey2">查看所有产品</button>';
+            argsPie.config = {divID:"grapPie", sizeWidth:602, sizeHeight:320, radius:168, posX:202, posY:0, labposX:418, labposY:56, angle:45, ccitemName:"productName"};
 
-    /*-- 表格查询 */
-    $('#dtBtnSeeker').live('click', function () {
-        var url = "do.html"
-        var args = {};
-        args.month = dtSelMonth;
-        args.productCode = dtSelProduct;
-        args.pagescount = 0;
-        args.start = 1;
-        args.limit = 20;
-        //--> 更新表格数据
-        $.post(url, args, function (data) {
-            var data = {totalProperty:6, root:[
-                {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
-                {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
-            ]}
-            initDataTableD(data, args);
-        });
-    })
-
-    /*
-     *下拉查询选择器获取值方法
-     * */
-
-    function bind_clickSelector(o, fn) {
-        var $dom = o;
-        $dom.find('.jqTransformSelectWrapper ul li a').click(function () {
-            var txtSelect = $(this).text();
-            $dom.find("select option").each(function (i) {
-                if ($(this).text() == txtSelect) {
-                    fn($(this).val()) //--> 执行过程参数
-                }
-            });
-        })
-
-    }
-
-
-    /*
-     *表格数据加载更新
-     * */
-
-    function initDataTableD(data, args) {
-        if (typeof(data) === "string") {
-            var data = libFna.strToJson(data);
-        }
-        var recordCount = data["totalProperty"];
-        $('#dt-recordinfo').find("reccount").html(recordCount);
-        args.pagescount = Math.ceil(recordCount / args.limit);
-        $('#dt-pageNum').empty(); //-- 清除页码
-        for (var i = 1; i <= args.pagescount; i++) {
-            $('#dt-pageNum').append('<li>' + i + '</li>');
-        }
-        d.dataTable(libFna.respDataFormat(data["root"]), {tID:"dt-example", aoColumns:aoColumns});
-    }
-
-    /*
-     * 初始化月份选择器
-     * */
-
-    $('#frmMonth').append('<select id="monthSelecter" data-role="none"></select>');
-    $('#frmMonth').css({'right':'5em', 'top':'6em'})
-    for (var i = 1; i <= 12; i++) {
-        var m = i + '月';
-        $('#monthSelecter').append('<option value="' + i + '">' + m + '</option>')
-    }
-    $(function () {
-        $('#frmMonth').jqTransform();  //--> 表单美化
-        $('#frmMonth').find('.jqTransformSelectWrapper div span').html(selMonth + "月");
-        bind_clickSelector($('#frmMonth'), function (m) {
-            selMonth = m;
-            initDirectionTreeD(urlIniteral, {month:m})
-        })
-        /*
-         $('#frmMonth').find('.jqTransformSelectWrapper ul li a').click(function () {
-         var txtSelect = $(this).text();
-         $('#monthSelecter option').each(function (i) {
-         if ($(this).text() == txtSelect) {
-         selMonth = $(this).val();
-         }
-         });
-         initDirectionTreeD(urlIniteral, {month:selMonth})
-         })
-         */
-    })
-
-
-    /*
-     * 初始化流向树节点数据
-     * */
-
-    function initDirectionTreeD(url, args) {
-        console.log(url);
-        $.post(url, args.month, function (d) {
-            var data;
-            typeof(d) === "string" ? data = libFna.strToJson(d)["data"] : data = d["data"];
-            console.log(data);
-            $('div[node-role=organize]').each(function (index) {
-                for (var i in data) {
-                    if (data[i]["id"] == index) {
-                        $(this).data("orgNode", {orgType:data[i]["orgType"], orgName:data[i]["orgName"], saleAccount:data[i]["saleAccount"], salePer:data[i]["salePer"]});
-                        $(this).find('b').html(data[i]["orgName"]);
-                        $(this).find('ac').html(data[i]["saleAccount"]);
-                        $('#' + data[i]["spid"]).find('b').html(data[i]["salePer"]);
-                        break;
+            /*-- 删除jscharts logo*/
+            var delChartsLog = function (id) {
+                var logoWrapId = id
+                var iCounter = 0;
+                var _this = this;
+                this.run = function () {
+                    iCounter++;
+                    var $logo = $('#' + logoWrapId).find("img[src^='data:image/png']");
+                    if ($logo[0]) {
+                        $logo.remove();
+                        clearInterval(_this.timer);
                     }
+                    console.log(iCounter);
                 }
+            }
+
+            /*-- 执行厂家点击事件*/
+            $('div[orgid=firm]').click(function () {
+                var orgType = $(this).data("orgNode").orgType;
+                $.post(urlFirm, {month:7, orgType:orgType}, function (d) {
+                            var d = libFna.single_RemoveJEl(d, "id");
+                            $.fancybox(argsPie.domStr);
+                            c.drawPie(d, argsPie.config);
+                            var shooter = new delChartsLog('grapPie');
+                            shooter.timer = setInterval(shooter.run, 10);  //--> 开启搜索jscharts logo时钟
+                        }, "json"
+                )
             })
-        });
-    }
-
-    /*$('#frmMonth').find('.jqTransformSelectWrapper ul li a').click(function () {
-     console.log($(this).text());
-     })*/
 
 
-    /*
-     * 初始化数据：7月份
-     * */
-    var response = {month:7, data:[
-        {id:1, orgType:0, orgName:"厂商", saleAccount:60, salePer:"89%"},
-        {id:2, orgType:1, orgName:"一级商", saleAccount:60, salePer:"89%"},
-        {id:3, orgType:2, orgName:"二级商", saleAccount:60, salePer:"89%"}
-    ]}
+            /*-- 执行经销商点击事件*/
+            $('div[node-role=organize]:not([orgid=firm])').click(function () {
+                var orgType = $(this).data("orgNode").orgType;
+                $.post(urlAgency, {month:7, orgType:orgType}, function (d) {
+                            argsBP.dataPie = d.product;
+                            argsBP.dataBar = d.org;
+                            loadChartsBP(argsBP);
+                            var shooterA = new delChartsLog('graphBar');
+                            shooterA.timer = setInterval(shooterA.run, 10);  //--> 开启搜索jscharts logo时钟
+                            var shooterB = new delChartsLog('grapPie');
+                            shooterB.timer = setInterval(shooterB.run, 10);  //--> 开启搜索jscharts logo时钟
 
-    /*
-     * 药厂产品销售比(饼状图)
-     * */
-    var response = [
-        {id:1, productName:"药品名1", salePer:"35%"},
-        {id:2, productName:"药品名2", salePer:"36%"},
-        {id:3, productName:"药品名3", salePer:"37%"}
-    ]
+                        }, "json"
+                )
+            })
 
-    /*
-     * 药厂产品销售排名(表格)
-     * */
-    var post = {month:7, productCode:2, start:2, limit:20};
-    var response = [
-        {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
-        {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
-        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-    ];
+            /*
+             * 厂家产品表格数据操作
+             * */
 
-    /*
-     * 销售商销售排行(柱状及饼状图)
-     * */
+            /*-- 表格配置参数*/
+            var aoColumns = [
+                { "sTitle":"药品名" },
+                { "sTitle":"销售额" },
+                { "sTitle":"环比增长" },
+                { "sTitle":"同比增长" }
+            ];
+            var uriLayout = "layoutDataTable.html"; //--> 表格布局URL
 
-    var post = {month:7, orgType:"4"};
-    var response = {product:[
-        {productName:"药品名1", salePer:"38%"},
-        {productName:"药品名2", salePer:"39%"},
-        {productName:"药品名3", salePer:"40%"}
-    ], org:[
-        {level:1, orgName:"商家名1", saleAccount:55, overAccount:38},
-        {level:2, orgName:"商家名2", saleAccount:56, overAccount:39},
-        {level:3, orgName:"商家名3", saleAccount:57, overAccount:40}
-    ]}
+            /*-- 切换加载表格数据*/
+            var dtSelMonth = 7, dtSelProduct = 0;
 
-})
+            $('#btnShowDt').live('click', function () {
+                // $('#grapPie').find("img[src^='data:image/png']").remove();
+
+                var url = "do.html"
+                var args = {};
+                args.month = selMonth;
+                args.productCode = 0;
+                args.pagescount = 0;
+                args.start = 1;
+                args.limit = 20;
+                //--> 弹出层初始加载表格数据
+                $.ajax({
+                    url:uriLayout,
+                    success:function (data) {
+                        $.fancybox(data, {onComplete:function () {
+                            $('#frmProductss').jqTransform();  //-- 表单美化
+                            $('#dtSelMonth').find('.jqTransformSelectWrapper div span').html(selMonth + "月");
+
+                            //--> 绑定月份选择事件
+                            bind_clickSelector($('#dtSelMonth'), function (m) {
+                                dtSelMonth = m;
+                            });
+                            //--> 绑定产品选择事件
+                            bind_clickSelector($('#dtSelProduct'), function (c) {
+                                dtSelProduct = c;
+                            });
+
+                            //--> 加载表格数据
+                            $.post(url, args, function (r) {
+                                var r = {totalProperty:6, root:[
+                                    {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+                                    {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                                    {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+                                ]}
+                                initDataTableD(r, args);
+                            });
+                        }});
+                    }
+                })
+            })
+
+            /*-- 表格翻页*/
+            $('#dt-pageNum li').live('click', function () {
+                var url = "do.html";
+                var args = {};
+                args.month = dtSelMonth;
+                args.productCode = dtSelProduct;
+                args.start = 1;
+                args.limit = 20;
+                args.start = $(this).text();
+                $('#dt-pageNum li').removeClass();
+                $(this).addClass("page-selected");
+                //--> 更新表格数据
+                $.post(url, args, function (data) {
+                    var data = {totalProperty:6, root:[
+                        {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+                        {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+                    ]}
+                    if (typeof(data) === "string") {
+                        var data = libFna.strToJson(data);
+                    }
+                    d.dataTable(libFna.respDataFormat(data["root"]), {tID:"dt-example", aoColumns:aoColumns});
+
+                });
+            })
+
+            /*-- 表格查询 */
+            $('#dtBtnSeeker').live('click', function () {
+                var url = "do.html"
+                var args = {};
+                args.month = dtSelMonth;
+                args.productCode = dtSelProduct;
+                args.pagescount = 0;
+                args.start = 1;
+                args.limit = 20;
+                //--> 更新表格数据
+                $.post(url, args, function (data) {
+                    var data = {totalProperty:6, root:[
+                        {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+                        {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                        {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+                    ]}
+                    initDataTableD(data, args);
+                });
+            })
+
+            /*
+             *下拉查询选择器获取值方法
+             * */
+
+            function bind_clickSelector(o, fn) {
+                var $dom = o;
+                $dom.find('.jqTransformSelectWrapper ul li a').click(function () {
+                    var txtSelect = $(this).text();
+                    $dom.find("select option").each(function (i) {
+                        if ($(this).text() == txtSelect) {
+                            fn($(this).val()) //--> 执行过程参数
+                        }
+                    });
+                })
+
+            }
+
+
+            /*
+             *表格数据加载更新
+             * */
+
+            function initDataTableD(data, args) {
+                if (typeof(data) === "string") {
+                    var data = libFna.strToJson(data);
+                }
+                var recordCount = data["totalProperty"];
+                $('#dt-recordinfo').find("reccount").html(recordCount);
+                args.pagescount = Math.ceil(recordCount / args.limit);
+                $('#dt-pageNum').empty(); //-- 清除页码
+                for (var i = 1; i <= args.pagescount; i++) {
+                    $('#dt-pageNum').append('<li>' + i + '</li>');
+                }
+                d.dataTable(libFna.respDataFormat(data["root"]), {tID:"dt-example", aoColumns:aoColumns});
+            }
+
+            /*
+             * 初始化月份选择器
+             * */
+
+            $('#frmMonth').append('<select id="monthSelecter" data-role="none"></select>');
+            $('#frmMonth').css({'right':'5em', 'top':'6em'})
+            for (var i = 1; i <= 12; i++) {
+                var m = i + '月';
+                $('#monthSelecter').append('<option value="' + i + '">' + m + '</option>')
+            }
+            $(function () {
+                $('#frmMonth').jqTransform();  //--> 表单美化
+                $('#frmMonth').find('.jqTransformSelectWrapper div span').html(selMonth + "月");
+                bind_clickSelector($('#frmMonth'), function (m) {
+                    selMonth = m;
+                    initDirectionTreeD(urlIniteral, {month:m})
+                })
+                /*
+                 $('#frmMonth').find('.jqTransformSelectWrapper ul li a').click(function () {
+                 var txtSelect = $(this).text();
+                 $('#monthSelecter option').each(function (i) {
+                 if ($(this).text() == txtSelect) {
+                 selMonth = $(this).val();
+                 }
+                 });
+                 initDirectionTreeD(urlIniteral, {month:selMonth})
+                 })
+                 */
+            })
+
+
+            /*
+             * 初始化流向树节点数据
+             * */
+
+            function initDirectionTreeD(url, args) {
+                console.log(url);
+                $.post(url, args.month, function (d) {
+
+                    var data;
+                    typeof(d) === "string" ? data = libFna.strToJson(d)["data"] : data = d["data"];
+
+
+                    console.log(data.length);
+                    // console.log(data);
+                    $('div[node-role=organize]').each(function (i) {
+                        $(this).data("orgNode", {id:data[i]["id"], orgType:data[i]["orgType"], orgName:data[i]["orgName"], saleAccount:data[i]["saleAccount"], salePer:data[i]["salePer"]});
+                        $(this).find('b').html(data[i]["orgName"]); //--> 商家名称
+                        $(this).find('ac').html(data[i]["saleAccount"]); //--> 销售额
+                        $('#' + data[i]["spid"]).find('b').html(data[i]["salePer"]); //--> 销售百分比
+
+                        //console.log(index);
+                        /*for (var i in data) {
+                         if (data[i]["id"] == index) {
+                         $(this).data("orgNode", {orgType:data[i]["orgType"], orgName:data[i]["orgName"], saleAccount:data[i]["saleAccount"], salePer:data[i]["salePer"]});
+                         $(this).find('b').html(data[i]["orgName"]);
+                         $(this).find('ac').html(data[i]["saleAccount"]);
+                         $('#' + data[i]["spid"]).find('b').html(data[i]["salePer"]);
+                         break;
+                         }
+                         }*/
+                    })
+                });
+            }
+
+            /*$('#frmMonth').find('.jqTransformSelectWrapper ul li a').click(function () {
+             console.log($(this).text());
+             })*/
+
+            $('#detail').click(function () {
+                // $.fancybox('<div class="tip-pop-none"><h3>提示</h3><p>暂无数据</p></div>', {padding:0});
+                $('#grapPie').find('img[src^="img:data:image/png"]').remove();
+            })
+
+
+            /*
+             * 初始化数据：7月份
+             * */
+            var response = {month:7, data:[
+                {id:1, orgType:0, orgName:"厂商", saleAccount:60, salePer:"89%"},
+                {id:2, orgType:1, orgName:"一级商", saleAccount:60, salePer:"89%"},
+                {id:3, orgType:2, orgName:"二级商", saleAccount:60, salePer:"89%"}
+            ]}
+
+            /*
+             * 药厂产品销售比(饼状图)
+             * */
+            var response = [
+                {id:1, productName:"药品名1", salePer:"35%"},
+                {id:2, productName:"药品名2", salePer:"36%"},
+                {id:3, productName:"药品名3", salePer:"37%"}
+            ]
+
+            /*
+             * 药厂产品销售排名(表格)
+             * */
+            var post = {month:7, productCode:2, start:2, limit:20};
+            var response = [
+                {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+                {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+            ];
+
+            /*
+             * 销售商销售排行(柱状及饼状图)
+             * */
+
+            var post = {month:7, orgType:"4"};
+            var response = {product:[
+                {productName:"药品名1", salePer:"38%"},
+                {productName:"药品名2", salePer:"39%"},
+                {productName:"药品名3", salePer:"40%"}
+            ], org:[
+                {level:1, orgName:"商家名1", saleAccount:55, overAccount:38},
+                {level:2, orgName:"商家名2", saleAccount:56, overAccount:39},
+                {level:3, orgName:"商家名3", saleAccount:57, overAccount:40}
+            ]}
+
+        }
+
+)
 ;
 
 
@@ -350,7 +393,7 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     <!-- /header -->
 
     <div data-role="content">
-
+        <div id="labUnit">销售额单位(千万)</div>
         <div id="paintarea"></div>
         <form id="frmMonth"></form>
 
