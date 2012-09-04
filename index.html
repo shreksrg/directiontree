@@ -11,6 +11,8 @@
 
 seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscripts/control/bpcharts.js', './jscripts/control/dynamic', './jscripts/control/libFna', 'test'], function (a, b, c, d, libFna, t) {
 
+    var selMonth = 7;
+    var selProduct = 0;
     /*
      * URL请求配置
      * */
@@ -18,6 +20,7 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     var urlIniteral = "http://localhost/directiontree/do.php";  //-- 初始化请求URL
     var urlFirm = "http://localhost/directiontree/respFirm.php"; //-- 点击厂商请求URL
     var urlAgency = "http://localhost/directiontree/respAgency.php";//-- 点击经销商请求URL
+
 
     /*
      * 初始化流向树数据
@@ -84,11 +87,13 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     var uriLayout = "layoutDataTable.html"; //--> 表格布局URL
 
     /*-- 切换加载表格数据*/
+    var dtSelMonth = 7, dtSelProduct = 0;
+
     $('#btnShowDt').live('click', function () {
         var url = "do.html"
         var args = {};
-        args.month = $('select[name=month]').val();
-        args.productCode = $('select[name=product]').val();
+        args.month = selMonth;
+        args.productCode = 0;
         args.pagescount = 0;
         args.start = 1;
         args.limit = 20;
@@ -98,23 +103,34 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
             success:function (data) {
                 $.fancybox(data, {onComplete:function () {
                     $('#frmProductss').jqTransform();  //-- 表单美化
+                    $('#dtSelMonth').find('.jqTransformSelectWrapper div span').html(selMonth + "月");
+
+                    //--> 绑定月份选择事件
+                    bind_clickSelector($('#dtSelMonth'), function (m) {
+                        dtSelMonth = m;
+                    });
+                    //--> 绑定产品选择事件
+                    bind_clickSelector($('#dtSelProduct'), function (c) {
+                        dtSelProduct = c;
+                    });
+
                     //--> 加载表格数据
                     $.post(url, args, function (r) {
                         var r = {totalProperty:6, root:[
-                         {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
-                         {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-                         {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
-                         ]}
+                            {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+                            {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                            {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+                        ]}
                         initDataTableD(r, args);
                     });
                 }});
@@ -126,8 +142,8 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     $('#dt-pageNum li').live('click', function () {
         var url = "do.html";
         var args = {};
-        args.month = $('select[name=month]').val();
-        args.productCode = $('select[name=product]').val();
+        args.month = dtSelMonth;
+        args.productCode = dtSelProduct;
         args.start = 1;
         args.limit = 20;
         args.start = $(this).text();
@@ -136,18 +152,18 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
         //--> 更新表格数据
         $.post(url, args, function (data) {
             var data = {totalProperty:6, root:[
-             {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
-             {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
-             ]}
+                {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+                {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+            ]}
             if (typeof(data) === "string") {
                 var data = libFna.strToJson(data);
             }
@@ -160,25 +176,46 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     $('#dtBtnSeeker').live('click', function () {
         var url = "do.html"
         var args = {};
-        args.month = $('select[name=month]').val();
-        args.productCode = $('select[name=product]').val();
+        args.month = dtSelMonth;
+        args.productCode = dtSelProduct;
         args.pagescount = 0;
         args.start = 1;
         args.limit = 20;
         //--> 更新表格数据
         $.post(url, args, function (data) {
             var data = {totalProperty:6, root:[
-             {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
-             {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
-             {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
-             ]}
+                {productName:"药品名1", salAcount:60, overPer:"15%", chainPer:"30%"},
+                {productName:"药品名2", salAcount:70, overPer:"16%", chainPer:"31%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"},
+                {productName:"药品名3", salAcount:80, overPer:"17%", chainPer:"32%"}
+            ]}
             initDataTableD(data, args);
         });
     })
 
+    /*
+     *下拉查询选择器获取值方法
+     * */
+
+    function bind_clickSelector(o, fn) {
+        var $dom = o;
+        $dom.find('.jqTransformSelectWrapper ul li a').click(function () {
+            var txtSelect = $(this).text();
+            $dom.find("select option").each(function (i) {
+                if ($(this).text() == txtSelect) {
+                    fn($(this).val()) //--> 执行过程参数
+                }
+            });
+        })
+
+    }
+
+
+    /*
+     *表格数据加载更新
+     * */
 
     function initDataTableD(data, args) {
         if (typeof(data) === "string") {
@@ -195,7 +232,7 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
     }
 
     /*
-     * 月份选择器
+     * 初始化月份选择器
      * */
 
     $('#frmMonth').append('<select id="monthSelecter" data-role="none"></select>');
@@ -205,17 +242,23 @@ seajs.use(['./jscripts/control/init.js', './jscripts/control/ddtree.js', './jscr
         $('#monthSelecter').append('<option value="' + i + '">' + m + '</option>')
     }
     $(function () {
-        var selMonth = 7;
         $('#frmMonth').jqTransform();  //--> 表单美化
-        $('#frmMonth').find('.jqTransformSelectWrapper ul li a').click(function () {
-            var txtSelect = $(this).text();
-            $('#monthSelecter option').each(function (i) {
-                if ($(this).text() == txtSelect) {
-                    selMonth = $(this).val();
-                }
-            });
-            initDirectionTreeD(urlIniteral, {month:selMonth})
+        $('#frmMonth').find('.jqTransformSelectWrapper div span').html(selMonth + "月");
+        bind_clickSelector($('#frmMonth'), function (m) {
+            selMonth = m;
+            initDirectionTreeD(urlIniteral, {month:m})
         })
+        /*
+         $('#frmMonth').find('.jqTransformSelectWrapper ul li a').click(function () {
+         var txtSelect = $(this).text();
+         $('#monthSelecter option').each(function (i) {
+         if ($(this).text() == txtSelect) {
+         selMonth = $(this).val();
+         }
+         });
+         initDirectionTreeD(urlIniteral, {month:selMonth})
+         })
+         */
     })
 
 
