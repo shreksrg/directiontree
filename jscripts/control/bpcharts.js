@@ -96,7 +96,7 @@ define(function (require, exports) {
          {"name":"南京连锁", "last":65, "current":405}
          ]*/
 
-
+        var eee;
         var length = data.length;
         var arrData = respDataFormat(data);
         var max = 12;
