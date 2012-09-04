@@ -99,6 +99,13 @@ define(function (require, exports) {
 
         var length = data.length;
         var arrData = respDataFormat(data);
+        var max = 12;
+        for (var i = 0; i < arrData.length; i++) {
+            var s = arrData[i][0];
+            if (s.length > max) {
+                arrData[i][0] = s.substr(0, (max - 2)) + '..';
+            }
+        }
 
         /*-- 打印柱状图*/
         //  var myData = new Array(['Asia', 437, 520], ['Europe', 322, 390], ['North America', 233, 286], ['Latin America', 110, 162], ['Africa', 34, 49], ['Middle East', 20, 31], ['Aus/Oceania', 19, 22]);
@@ -116,8 +123,8 @@ define(function (require, exports) {
         myChart.setAxisWidth(2); //-- 坐标轴宽度
         myChart.setBarValuesColor('#2F6D99');
         myChart.setAxisPaddingTop(48);
-        myChart.setAxisPaddingBottom(60);
-        myChart.setAxisPaddingLeft(45);
+        myChart.setAxisPaddingBottom(100);
+        myChart.setAxisPaddingLeft(85);
         myChart.setTitleFontSize(14);
         for (var i in argument.barColor) {
             myChart.setBarColor(argument.barColor[i].color, argument.barColor[i].sort);
