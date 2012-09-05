@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.btnLap').click(function () {
+                var $_this = $(this);
+                $('.partLeft').toggle();
+                console.log($(this).offset().left);
+                $(this).offset().left == 1 ? $(this).css({'left':'120px'}) : $(this).css({'left':0});
+
+                // $(this).css({'left':0});
+            })
+        })
+
+    </script>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<style type="text/css">
+    body {
+        margin: 0
+    }
+
+    .wrap {
+        position: relative;
+        width: 100%;
+        height: 782px;
+        border: 1px solid #000
+    }
+
+    .partLeft {
+        position: absolute;
+        width: 120px;
+        background: #cccccc;
+        height: 100%;
+        left: 0;
+        top: 0
+    }
+
+    .btnLap {
+        position: absolute;
+        width: 18px;
+        height: 100%;
+        top: 0;
+        left: 120px;
+        background: green;
+        cursor: pointer;
+    }
+
+    .partContent {
+        position: absolute;
+        width: 560px;
+        height: 100%;
+        background: #e78f08;
+        top: 0;
+        right: 0
+    }
+
+</style>
+<div class="wrap">
+    <div class="partLeft"></div>
+    <div class="btnLap"></div>
+    <div class="partContent"></div>
+</div>
+
+</body>
+</html>
